@@ -3,7 +3,7 @@ const catchAsync = require("../utils/catchAsync");
 
 const getBlog = async (req, res) => {
   const userid = req.params.userid
-  console.log(userId)
+  console.log(userid)
   const response = await blogService.getBlogData(userid);
   res.status(200).send(response);
 };

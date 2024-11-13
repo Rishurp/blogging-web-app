@@ -36,7 +36,7 @@ const updateBlog = async (id, data) => {
   let blog = await Blog.findByIdAndUpdate(id, data, {
     new: true,
   });
-  if (!blog) {
+  if (!blog) 
     throw new ApiError(400, " No blog to update");
   }
   return blog;
