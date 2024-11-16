@@ -2,6 +2,7 @@ const config = require("./config/config");
 const app = require("./app");
 const mongoose = require("mongoose");
 const { User } = require("./models");
+const { prototype } = require("./utils/ApiError");
 
 mongoose
   .connect(config.MongoDB)

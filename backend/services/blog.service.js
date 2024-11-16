@@ -37,6 +37,7 @@ const updateBlog = async (id, data) => {
     new: true,
   });
   if (!blog) 
+  {
     throw new ApiError(400, " No blog to update");
   }
   return blog;

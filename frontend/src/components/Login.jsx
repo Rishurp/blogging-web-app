@@ -1,12 +1,18 @@
-// components/Login.js
-import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { TextField, Button, Container, Typography } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { config } from "../App";
+import { useSnackbar } from "notistack";
+import { useLocalStorage } from "@uidotdev/usehooks";
 
 function Login() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [userId, setUserId] = useLocalStorage("userId", null);
+  const [token, setToken] = useLocalStorage("token", null);
+  const [username, setUsername] = useLocalStorage("username", null);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,19 +21,31 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Example POST request
-      await axios.post('/api/login', formData);
-      alert('Login successful!');
-      // Redirect to dashboard or home page after login
-      navigate('/dashboard');
+      let res = await axios.post(
+        `${config.backendEndpoint}/auth/login`,
+        formData
+      );
+      console.log("API Response:", res);
+
+      if (res.status === 200) {
+        console.log("Login successful. Navigating...");
+        setUserId(res.data.response._id);
+        setToken(res.data.token);
+        setUsername(res.data.response.name);
+        enqueueSnackbar("Login Successfully.");
+        navigate("/");
+      }
     } catch (error) {
-      console.error(error);
-      alert('Login failed. Please try again.');
+      console.error("Login failed:", error);
+      enqueueSnackbar("Wrong Credentials.");
     }
   };
 
   return (
-    <Container maxWidth="sm" className="p-4 shadow-lg rounded-lg mt-10 bg-white">
+    <Container
+      maxWidth="sm"
+      className="p-4 shadow-lg rounded-lg mt-10 bg-white"
+    >
       <Typography variant="h4" className="mb-4 text-center">
         Login
       </Typography>
@@ -50,11 +68,17 @@ function Login() {
           value={formData.password}
           onChange={handleChange}
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth className="mt-4">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          fullWidth
+          className="mt-4"
+        >
           Login
         </Button>
         <Button
-          onClick={() => navigate('/register')}
+          onClick={() => navigate("/register")}
           variant="text"
           color="secondary"
           fullWidth

@@ -1,11 +1,11 @@
-// components/Register.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { config } from '../App';
 
-function Register() {
-  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+ const Register = () => {
+  const [formData, setFormData] = useState({ name:'', email:'', password:'' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,7 +15,8 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/register', formData);
+        console.log(formData)
+      await axios.post(`${config.backendEndpoint}/auth/register`, formData);
       alert('Registration successful!');
       navigate('/login');
     } catch (error) {
@@ -31,8 +32,8 @@ function Register() {
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="Username"
-          name="username"
+          label="name"
+          name="name"
           fullWidth
           margin="normal"
           value={formData.username}

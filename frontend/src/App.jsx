@@ -1,37 +1,36 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import Blog from "./components/Blog";
+import Home from "./components/Home";
+
+export const config = {
+  backendEndpoint: "https://blogging-web-app-bqfz.onrender.com/v1",
+};
 
 function App() {
-  const user = localStorage.getItem("Username");
+  const [token] = useLocalStorage("token", null);
 
   const ProtectRoute = ({ children }) => {
-    if (!user) {
+    if (!token) {
       return <Navigate to="/login" />;
     }
     return children;
   };
+
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectRoute>
-              <Blog />
-            </ProtectRoute>
-          }
-        ></Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <ProtectRoute>
+            <Home />
+          </ProtectRoute>
+        }
+      ></Route>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   );
 }
 
